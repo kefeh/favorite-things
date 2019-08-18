@@ -7,3 +7,4 @@ venv/
 #Othefiles and folders
 __pycache__/
 .pyc/
+.env
