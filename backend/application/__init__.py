@@ -1,11 +1,21 @@
 from flask import Flask
+from config import app_config
 from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
+db = SQLAlchemy()
 
-app.config['SECRET_KEY'] = '1234567890QWERTYUIOP'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:myboy12tobe12@localhost:3306/brightcore'
 
-db = SQLAlchemy(app)
+def create_app(config_type):
+    """Constructs the core application"""
+    app = Flask(__name__)
+    app.config.from_object(app_config[config_type])
 
-from application.api import routes
+    db.init_app(app)
+    from .api.routes import test
+    app.register_blueprint(test)
+
+    #create tables for our database
+    with app.app_context():
+        db.create_all()
+
+    return app
